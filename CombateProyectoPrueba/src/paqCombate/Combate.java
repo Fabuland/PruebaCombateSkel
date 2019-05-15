@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Icon;
 
 public class Combate extends JFrame {
 
@@ -35,7 +36,7 @@ public class Combate extends JFrame {
 		getContentPane().setLayout(null);
 
 		menuPrincipal = new JPanel() {
-			protected void paintComponent(Graphics g) {
+			/*protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				BufferedImage img = null;
 				try {
@@ -45,19 +46,18 @@ public class Combate extends JFrame {
 					e.printStackTrace();
 				}
 				g.drawImage(img, 0, 0, null);
-			}
+			}*/
 		};
 		menuPrincipal.setBounds(0, 0, 944, 502);
 		getContentPane().add(menuPrincipal);
 		menuPrincipal.setVisible(true);
 		menuPrincipal.setLayout(null);
-		ClassLoader cl = this.getClass().getClassLoader();
-	    ImageIcon img = new ImageIcon(cl.getResource("src\\pic\\skeleton.gif"));
-		JLabel label = new JLabel(img);
-		add(label);
-		label.setBounds(100, 100, 300, 254);
-		menuPrincipal.add(label);
+		
+		JLabel label_1 = new JLabel("");
+		label_1.setIcon(new ImageIcon(Combate.class.getResource("src//paqCombate//ok2.gif")));
+		label_1.setBounds(10, 86, 358, 336);
+		menuPrincipal.add(label_1);
 
 	}
-
 }
+
