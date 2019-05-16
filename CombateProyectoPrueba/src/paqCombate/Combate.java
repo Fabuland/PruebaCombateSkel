@@ -153,8 +153,26 @@ public class Combate extends JFrame {
 						vidaActualEsq = 0;
 					}
 					vidaActualEsqTxt.setText(vidaActualEsq + "/" + vidaTotalEsq);
+					
 				}
-				System.out.println(contTiempo);
+				System.out.println(vidaActualEsq);
+				if (vidaActualEsq < ((vidaTotalEsq / 8) * 7) && vidaActualEsq >= (vidaTotalEsq / 8) * 6) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida1.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 6) && vidaActualEsq >= (vidaTotalEsq / 8) * 5) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida2.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 5) && vidaActualEsq >= (vidaTotalEsq / 8) * 4) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida3.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 4) && vidaActualEsq >= (vidaTotalEsq / 8) * 3) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida4.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 3) && vidaActualEsq >= (vidaTotalEsq / 8) * 2) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida5.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 2) && vidaActualEsq >= (vidaTotalEsq / 8) * 1) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida6.png")));
+				} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 1) && vidaActualEsq > 0) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida7.png")));
+				} else if (vidaActualEsq == 0) {
+					barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida8.png")));
+				}
 			}
 		};
 		time.addActionListener(listener);
@@ -178,12 +196,12 @@ public class Combate extends JFrame {
 
 	public void ajustarVidas() {
 
-		vidaActualEsq = 0;
+		vidaActualEsq = 40;
 		vidaTotalEsq = 40;
 		vidaActualEnmg = 15;
 		vidaTotalEnmg = 15;
 		dañoEsq = 7;
-		dañoEnmg = 3;
+		dañoEnmg = 7;
 
 	}
 
