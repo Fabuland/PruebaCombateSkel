@@ -27,10 +27,13 @@ import javax.swing.Icon;
 public class Combate extends JFrame {
 
 	JPanel menuPrincipal;
-	JLabel fondo, esqueleto, enemigo, barraVidaEsq, barraVidaEnmg, vidaActualEsqTxt, vidaActualEnmgTxt, bolaFuego;
+	JLabel fondo, esqueleto, enemigo, barraVidaEsq, barraVidaEnmg, vidaActualEsqTxt, vidaActualEnmgTxt, bolaFuego,
+			nivelDisplayed, expNeeded;
 	double vidaTotalEsq, vidaActualEsq, vidaTotalEnmg, vidaActualEnmg;
+	int vidaTotalEsqDisplayed, vidaActualEsqDisplayed, vidaTotalEnmgDisplayed, vidaActualEnmgDisplayed;
 	JButton btnAtaque;
-	int dañoEsq, dañoEnmg;
+	int dañoEsq, dañoEnmg, nivelActual, expNeed, expActual;
+	ImageIcon slime, owlboy, mago, encapuchado;
 
 	public Combate() throws IOException {
 
@@ -64,10 +67,25 @@ public class Combate extends JFrame {
 		esqueleto.setBounds(10, 220, 520, 280);
 		fondo.add(esqueleto);
 
+		nivelActual = 1;
+		nivelDisplayed = new JLabel("Nivel " + nivelActual);
+		nivelDisplayed.setFont(new Font("System", Font.BOLD, 28));
+		nivelDisplayed.setForeground(Color.white);
+		nivelDisplayed.setBounds(90, 185, 150, 30);
+		fondo.add(nivelDisplayed);
+
+		expNeed = 150;
+		expNeeded = new JLabel("Exp necesaria: " + expNeed);
+		expNeeded.setFont(new Font("System", Font.BOLD, 16));
+		expNeeded.setForeground(Color.black);
+		expNeeded.setBounds(50, 475, 260, 30);
+		fondo.add(expNeeded);
+
 		btnAtaque = new JButton("");
 		btnAtaque.setIcon(new ImageIcon(Combate.class.getResource("btnataque.png")));
 		btnAtaque.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnAtaque.setEnabled(false);
 				atacar();
 			}
 		});
@@ -82,14 +100,18 @@ public class Combate extends JFrame {
 		barraVidaEsq.setBounds(90, 220, 260, 29);
 		fondo.add(barraVidaEsq);
 
-		vidaActualEsqTxt = new JLabel(vidaActualEsq + "/" + vidaTotalEsq);
+		vidaActualEsqTxt = new JLabel(vidaActualEsqDisplayed + "/" + vidaTotalEsqDisplayed);
 		vidaActualEsqTxt.setBounds(360, 220, 80, 29);
-		vidaActualEsqTxt.setFont(new Font("Tahoma", Font.BOLD, 16));
+		vidaActualEsqTxt.setFont(new Font("Impact", Font.PLAIN, 16));
 		vidaActualEsqTxt.setForeground(Color.BLACK);
 		fondo.add(vidaActualEsqTxt);
 
 		enemigo = new JLabel("");
-		enemigo.setIcon(new ImageIcon(Combate.class.getResource("slime.gif")));
+		slime = new ImageIcon(Combate.class.getResource("slime.gif"));
+		owlboy = new ImageIcon(Combate.class.getResource("owlboy.gif"));
+		mago = new ImageIcon(Combate.class.getResource("mago.gif"));
+		encapuchado = new ImageIcon(Combate.class.getResource("encapuchado.gif"));
+		enemigo.setIcon(mago);
 		enemigo.setBounds(630, 300, 200, 200);
 		fondo.add(enemigo);
 
@@ -98,9 +120,9 @@ public class Combate extends JFrame {
 		barraVidaEnmg.setBounds(600, 220, 260, 29);
 		fondo.add(barraVidaEnmg);
 
-		vidaActualEnmgTxt = new JLabel(vidaActualEnmg + "/" + vidaTotalEnmg);
+		vidaActualEnmgTxt = new JLabel(vidaActualEnmgDisplayed + "/" + vidaTotalEnmgDisplayed);
 		vidaActualEnmgTxt.setBounds(540, 220, 80, 29);
-		vidaActualEnmgTxt.setFont(new Font("Tahoma", Font.BOLD, 16));
+		vidaActualEnmgTxt.setFont(new Font("Impact", Font.PLAIN, 16));
 		vidaActualEnmgTxt.setForeground(Color.BLACK);
 		fondo.add(vidaActualEnmgTxt);
 
@@ -120,44 +142,67 @@ public class Combate extends JFrame {
 			int posBolaFuego = 470;
 
 			public void actionPerformed(ActionEvent e) {
-				esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeletonattack.gif")));
+				if(vidaActualEnmg > 0) {
+					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeletonattack.gif")));
+				}else if(vidaActualEnmg == 0) {
+					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
+				}
 				contTiempo++;
-				if (contTiempo > 7 && contTiempo <= 15) {
+				if ((contTiempo > 7 && contTiempo <= 12) && vidaActualEnmg > 0) {
 					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
 					bolaFuego.setVisible(true);
-					posBolaFuego -= 15;
+					posBolaFuego -= 20;
 					bolaFuego.setBounds(posBolaFuego, 300, 200, 200);
-				} else if (contTiempo > 15 && contTiempo <= 20) {
+				} else if ((contTiempo > 12 && contTiempo <= 17) && vidaActualEnmg > 0) {
 					bolaFuego.setVisible(false);
 					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
 					if (vidaActualEsq == 0) {
 						esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeletondying.gif")));
-					} else if (vidaActualEsq > 0) {
+					} else if (vidaActualEsq > 0 && vidaActualEnmg > 0) {
 						time.stop();
+						btnAtaque.setEnabled(true);
 					}
-				} else if (contTiempo > 20) {
+				} else if ((contTiempo > 17 && contTiempo <= 23) && vidaActualEsq == 0) {
 					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeletondead.png")));
 					esqueleto.setBounds(10, 420, 390, 60);
 					btnAtaque.setEnabled(false);
 					time.stop();
+				} else if (vidaActualEnmg == 0 && contTiempo == 12) { //muere el enemigo
+					expActual += 150;
+					vidaActualEnmg = vidaTotalEnmg;
+					vidaActualEnmgDisplayed = (int) vidaActualEnmg;
+					expNeeded.setText("Exp necesaria: " + expNeed);
+					barraVidaEnmg.setIcon(new ImageIcon(Combate.class.getResource("barraVida.png")));
+					cambiarEnemigo();
+					vidaActualEnmgTxt.setText(vidaActualEnmgDisplayed + "/" + vidaTotalEnmgDisplayed);
+					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
+					time.stop();
+					btnAtaque.setEnabled(true);
+					comprobarExpNecesaria();
 				}
+				
 				if (contTiempo == 6) {
 					vidaActualEnmg = vidaActualEnmg - dañarEnmg();
-					if (vidaActualEnmg < 1) {
+					vidaActualEnmgDisplayed = (int) vidaActualEnmg;
+					if (vidaActualEnmgDisplayed < 1) {
+						vidaActualEnmgDisplayed = 0;
 						vidaActualEnmg = 0;
 					}
-					vidaActualEnmgTxt.setText(vidaActualEnmg + "/" + vidaTotalEnmg);
-				} else if (contTiempo == 13) {
+					vidaActualEnmgTxt.setText(vidaActualEnmgDisplayed + "/" + vidaTotalEnmgDisplayed);
+				} else if (contTiempo == 11 && vidaActualEnmg > 0) {
 					vidaActualEsq = vidaActualEsq - dañarEsq();
-					if (vidaActualEsq < 1) {
+					vidaActualEsqDisplayed = (int) vidaActualEsq;
+					if (vidaActualEsqDisplayed < 1) {
+						vidaActualEsqDisplayed = 0;
 						vidaActualEsq = 0;
 					}
-					vidaActualEsqTxt.setText(vidaActualEsq + "/" + vidaTotalEsq);
+					vidaActualEsqTxt.setText(vidaActualEsqDisplayed + "/" + vidaTotalEsqDisplayed);
 
 				}
-				System.out.println(vidaActualEsq);
 				cambiarBarraVidaEsq();
 				cambiarBarraVidaEnmg();
+				
+				System.out.println(dañoEsq);
 			}
 		};
 		time.addActionListener(listener);
@@ -166,7 +211,7 @@ public class Combate extends JFrame {
 	}
 
 	public void cambiarBarraVidaEsq() {
-		if (vidaActualEsq < ((vidaTotalEsq / 8) * 7) && vidaActualEsq >= (vidaTotalEsq / 8) * 6) {
+		if (vidaActualEsq < vidaTotalEsq && vidaActualEsq >= (vidaTotalEsq / 8) * 6) {
 			barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida1.png")));
 		} else if (vidaActualEsq < ((vidaTotalEsq / 8) * 6) && vidaActualEsq >= (vidaTotalEsq / 8) * 5) {
 			barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida2.png")));
@@ -207,14 +252,14 @@ public class Combate extends JFrame {
 
 	public int dañarEnmg() {
 
-		int randomNum = ThreadLocalRandom.current().nextInt(dañoEsq, dañoEsq + 5);
+		int randomNum = ThreadLocalRandom.current().nextInt(dañoEsq, (dañoEsq + 8));
 		return randomNum;
 
 	}
 
 	public int dañarEsq() {
 
-		int randomNum = ThreadLocalRandom.current().nextInt(dañoEnmg, dañoEnmg + 3);
+		int randomNum = ThreadLocalRandom.current().nextInt(dañoEnmg, (dañoEnmg + 5));
 		return randomNum;
 
 	}
@@ -222,12 +267,109 @@ public class Combate extends JFrame {
 	public void ajustarVidas() {
 
 		vidaActualEsq = 40;
+		vidaActualEsqDisplayed = (int) vidaActualEsq;
 		vidaTotalEsq = 40;
+		vidaTotalEsqDisplayed = (int) vidaTotalEsq;
 		vidaActualEnmg = 15;
+		vidaActualEnmgDisplayed = (int) vidaActualEnmg;
 		vidaTotalEnmg = 15;
-		dañoEsq = 7;
-		dañoEnmg = 7;
+		vidaTotalEnmgDisplayed = (int) vidaTotalEnmg;
+		dañoEsq = 3;
+		dañoEnmg = 3;
 
+	}
+
+	public void comprobarExpNecesaria() {
+
+		if (nivelActual == 1 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+			System.out.println();
+		} else if (nivelActual == 2 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		} else if (nivelActual == 3 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		} else if (nivelActual == 4 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		}else if (nivelActual == 5 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		}else if (nivelActual == 6 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		}else if (nivelActual == 7 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		}else if (nivelActual == 8 && expNeed > 0) {
+			expNeed = expNeed - expActual;
+			comprobarSubidaNivel();
+			expNeeded.setText("Exp necesaria: " + expNeed);
+		}
+
+	}
+	
+	public void comprobarSubidaNivel() {
+		if(expNeed <= 0) {
+			nivelActual++;
+			nivelDisplayed.setText("Nivel "+ nivelActual);
+			expActual = 0;
+			if(nivelActual == 2) {
+				expNeed = 270;
+			}else if(nivelActual == 3) {
+				expNeed = 390;
+			}else if(nivelActual == 4) {
+				expNeed = 510;
+			}else if(nivelActual == 5) {
+				expNeed = 630;
+			}else if(nivelActual == 6) {
+				expNeed = 750;
+			}else if(nivelActual == 7) {
+				expNeed = 870;
+			}else if(nivelActual == 8) {
+				expNeed = 990;
+			}else if(nivelActual == 9) {
+				expNeed = 1200;
+			}
+			vidaTotalEsq += 5;
+			vidaActualEsq = vidaTotalEsq;
+			vidaActualEsqDisplayed = (int) vidaActualEsq;
+			vidaTotalEsqDisplayed = (int) vidaTotalEsq;
+			
+			vidaTotalEnmg += 3;
+			vidaActualEnmg = vidaTotalEnmg;
+			vidaActualEnmgDisplayed = (int) vidaActualEnmg;
+			vidaTotalEnmgDisplayed = (int) vidaTotalEnmg;
+			
+			vidaActualEsqTxt.setText(vidaActualEsqDisplayed + "/" + vidaTotalEsqDisplayed);
+			vidaActualEnmgTxt.setText(vidaActualEnmgDisplayed + "/" + vidaTotalEnmgDisplayed);
+			barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida.png")));
+			barraVidaEnmg.setIcon(new ImageIcon(Combate.class.getResource("barraVida.png")));
+			dañoEsq += 2;
+			dañoEnmg += 2;
+			
+		}
+	}
+	
+	public void cambiarEnemigo() {
+		if(enemigo.getIcon() == slime) {
+			enemigo.setIcon(owlboy);
+		}else if(enemigo.getIcon() == owlboy) {
+			enemigo.setIcon(mago);
+		}else if(enemigo.getIcon() == mago) {
+			enemigo.setIcon(encapuchado);
+		}else if(enemigo.getIcon() == encapuchado) {
+			enemigo.setIcon(slime);
+		}
 	}
 
 }
