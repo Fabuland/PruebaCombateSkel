@@ -63,7 +63,7 @@ public class Combate extends JFrame {
 		menuPrincipal.add(fondo);
 
 		esqueleto = new JLabel("");
-		esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
+		esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeletonwalking.gif")));
 		esqueleto.setBounds(10, 220, 520, 280);
 		fondo.add(esqueleto);
 
