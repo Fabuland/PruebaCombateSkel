@@ -28,11 +28,11 @@ public class Combate extends JFrame {
 
 	JPanel menuPrincipal;
 	JLabel fondo, esqueleto, enemigo, barraVidaEsq, barraVidaEnmg, vidaActualEsqTxt, vidaActualEnmgTxt, bolaFuego,
-			nivelDisplayed, expNeeded;
+			nivelDisplayed, expNeeded, derrotados;
 	double vidaTotalEsq, vidaActualEsq, vidaTotalEnmg, vidaActualEnmg;
 	int vidaTotalEsqDisplayed, vidaActualEsqDisplayed, vidaTotalEnmgDisplayed, vidaActualEnmgDisplayed;
-	JButton btnAtaque;
-	int dañoEsq, dañoEnmg, nivelActual, expNeed, expActual;
+	JButton btnAtaque, healthPot;
+	int dañoEsq, dañoEnmg, nivelActual, expNeed, expActual, enmDerrotados;
 	ImageIcon slime, owlboy, mago, encapuchado;
 
 	public Combate() throws IOException {
@@ -131,6 +131,25 @@ public class Combate extends JFrame {
 		bolaFuego.setVisible(false);
 		bolaFuego.setBounds(470, 300, 200, 200);
 		fondo.add(bolaFuego);
+		
+		healthPot = new JButton();
+		healthPot.setIcon(new ImageIcon(Combate.class.getResource("healthpot.png")));
+		healthPot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				añadirVida();
+			}
+		});
+		healthPot.setOpaque(false);
+		healthPot.setContentAreaFilled(false);
+		healthPot.setBorderPainted(false);
+		healthPot.setBounds(30, 300, 40, 40);
+		fondo.add(healthPot);
+		
+		derrotados = new JLabel("Enemigos derrotados: " + enmDerrotados);
+		derrotados.setBounds(280, 0, 300, 50);
+		derrotados.setFont(new Font("System", Font.BOLD, 16));
+		derrotados.setForeground(Color.white);
+		fondo.add(derrotados);
 
 	}
 
@@ -176,6 +195,8 @@ public class Combate extends JFrame {
 					cambiarEnemigo();
 					vidaActualEnmgTxt.setText(vidaActualEnmgDisplayed + "/" + vidaTotalEnmgDisplayed);
 					esqueleto.setIcon(new ImageIcon(Combate.class.getResource("skeleton.gif")));
+					enmDerrotados++;
+					derrotados.setText("Enemigos derrotados: " + enmDerrotados);
 					time.stop();
 					btnAtaque.setEnabled(true);
 					comprobarExpNecesaria();
@@ -259,7 +280,7 @@ public class Combate extends JFrame {
 
 	public int dañarEsq() {
 
-		int randomNum = ThreadLocalRandom.current().nextInt(dañoEnmg, (dañoEnmg + 5));
+		int randomNum = ThreadLocalRandom.current().nextInt(dañoEnmg, (dañoEnmg + 3));
 		return randomNum;
 
 	}
@@ -274,8 +295,8 @@ public class Combate extends JFrame {
 		vidaActualEnmgDisplayed = (int) vidaActualEnmg;
 		vidaTotalEnmg = 15;
 		vidaTotalEnmgDisplayed = (int) vidaTotalEnmg;
-		dañoEsq = 3;
-		dañoEnmg = 3;
+		dañoEsq = 5;
+		dañoEnmg = 2;
 
 	}
 
@@ -370,6 +391,15 @@ public class Combate extends JFrame {
 		}else if(enemigo.getIcon() == encapuchado) {
 			enemigo.setIcon(slime);
 		}
+	}
+	
+	public void añadirVida() {
+		
+		vidaActualEsq = vidaTotalEsq;
+		vidaActualEsqDisplayed = (int) vidaActualEsq;
+		barraVidaEsq.setIcon(new ImageIcon(Combate.class.getResource("barraVida.png")));
+		vidaActualEsqTxt.setText(vidaActualEsqDisplayed + "/" + vidaTotalEsqDisplayed);
+		
 	}
 
 }
